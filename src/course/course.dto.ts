@@ -10,7 +10,7 @@ export class CreateCourseDto {
   Description: string;
 
   @IsNotEmpty()
-  InstructorID: Instructor;
+  InstructorID: number;
 
   @IsNotEmpty()
   EnrollmentDate: Date;

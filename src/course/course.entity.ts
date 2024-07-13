@@ -12,9 +12,10 @@ export class Course {
   @Column()
   Description: string;
 
-  @ManyToOne(() => Instructor)
-  @JoinColumn({ name: 'InstructorID' })
-  InstructorID: Instructor;
+  // @ManyToOne(() => Instructor)
+  // @JoinColumn({ name: 'InstructorID' })
+  @Column()
+  InstructorID: number;
 
   @Column()
   EnrollmentDate: Date;

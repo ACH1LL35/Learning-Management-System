@@ -13,9 +13,10 @@ export class CourseService {
 
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const course = this.courseRepository.create(createCourseDto);
-    return this.courseRepository.save(course);
-  }
+    const savedCourse = await this.courseRepository.save(course);
 
+    return savedCourse;
+  }
   async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const course = await this.courseRepository.findOne({ where: { CourseID: id } });
     if (!course) {
