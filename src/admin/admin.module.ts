@@ -5,10 +5,12 @@ import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
 import { User } from '../user/user.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { CourseController } from 'src/course/course.controller';
+import { Course } from 'src/course/course.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin, User]),
+    TypeOrmModule.forFeature([Admin, User,Course]),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -28,6 +30,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
   ],
   providers: [AdminService],
-  controllers: [AdminController],
+  controllers: [AdminController,CourseController],
 })
 export class AdminModule {}
