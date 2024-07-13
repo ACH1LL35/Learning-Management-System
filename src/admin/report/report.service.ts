@@ -29,7 +29,7 @@ export class ReportingService {
     await new Promise((resolve, reject) => {
       const fileStream = createWriteStream(filePath);
       fileStream.on('error', error => reject(error));
-      fileStream.on('finish', () => resolve());
+      // fileStream.on('finish', () => resolve());
       file.stream.pipe(fileStream);
     });
 

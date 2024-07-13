@@ -16,5 +16,5 @@ export class ReportDto {
   @IsNotEmpty()
   GeneratedBy: number; 
 
-  File: UploadedFile; 
+  // File: UploadedFile; 
 }
