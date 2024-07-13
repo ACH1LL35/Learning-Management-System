@@ -3,7 +3,7 @@ import { CourseMaterialService } from './courseMaterials.service';
 import { CourseMaterialDto } from './courseMaterials.dto';
 import { CourseMaterial } from './courseMaterials.entity';
 
-@Controller('course-materials')
+@Controller('materials')
 export class CourseMaterialController {
   constructor(private readonly courseMaterialService: CourseMaterialService) {}
 

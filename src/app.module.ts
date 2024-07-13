@@ -7,10 +7,11 @@ import { ParentModule } from './parent/parent.module';
 import { AdminModule } from './admin/admin.module';
 import { CourseModule } from './course/course.module';
 import { ContentApprovalModule } from './course/contentApproval/contentApproval.module';
+import { CourseMaterialModule } from './course/courseMaterials/courseMaterials.module';
 
 @Module({
   imports: [
-    ParentModule,AdminModule,CourseModule,ContentApprovalModule,
+    ParentModule,AdminModule,CourseModule,ContentApprovalModule,CourseMaterialModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
