@@ -8,10 +8,12 @@ import { AdminModule } from './admin/admin.module';
 import { CourseModule } from './course/course.module';
 import { ContentApprovalModule } from './course/contentApproval/contentApproval.module';
 import { CourseMaterialModule } from './course/courseMaterials/courseMaterials.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ParentModule,AdminModule,CourseModule,ContentApprovalModule,CourseMaterialModule,
+    ParentModule,AdminModule,CourseModule,UserModule,
+    ContentApprovalModule,CourseMaterialModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',

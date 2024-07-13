@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Patch, Param, Delete, Session, Logger, UsePipes, ValidationPipe, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto, UpdateUserDto } from './user.dto';
+import { UserDto } from './user.dto';
 
 @Controller('users')
 export class UserController {
@@ -13,14 +13,6 @@ export class UserController {
   async create(@Body() createUserDto: UserDto) {
     const createdUser = await this.userService.create(createUserDto);
     return { message: 'User created successfully', user: createdUser };
-  }
-
-  @Patch(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @Session() session: Record<string, any>) {
-    const sessionUserId = parseInt(session.userId);
-    const updatedUser = await this.userService.update(id, updateUserDto, sessionUserId);
-    return { message: 'User updated successfully', user: updatedUser };
   }
 
   @Post('login')
