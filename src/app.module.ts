@@ -9,11 +9,12 @@ import { CourseModule } from './course/course.module';
 import { ContentApprovalModule } from './course/contentApproval/contentApproval.module';
 import { CourseMaterialModule } from './course/courseMaterials/courseMaterials.module';
 import { UserModule } from './user/user.module';
+import { ReportingModule } from './admin/report/report.module';
 
 @Module({
   imports: [
     ParentModule,AdminModule,CourseModule,UserModule,
-    ContentApprovalModule,CourseMaterialModule,
+    ContentApprovalModule,ReportingModule,CourseMaterialModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',

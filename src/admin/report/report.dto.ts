@@ -1,7 +1,4 @@
-// report.dto.ts
-
 import { IsNotEmpty, IsDateString } from 'class-validator';
-import { UploadedFile } from '@nestjs/common';
 
 export class ReportDto {
   @IsNotEmpty()
@@ -14,7 +11,5 @@ export class ReportDto {
   ReportDate: Date;
 
   @IsNotEmpty()
-  GeneratedBy: number; 
-
-  // File: UploadedFile; 
+  GeneratedBy: string;
 }

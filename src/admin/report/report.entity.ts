@@ -1,5 +1,3 @@
-// reporting.entity.ts
-
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
@@ -17,8 +15,8 @@ export class Reporting {
   ReportDate: Date;
 
   @Column()
-  GeneratedBy: number; 
+  GeneratedBy: string;
 
   @Column({ nullable: true })
-  FilePath: string; 
+  FilePath: string;
 }
