@@ -1,18 +1,35 @@
-import { Controller, Post, Body, Patch, Param, Delete, Get, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete, Get, UsePipes, ValidationPipe, BadRequestException, UnauthorizedException, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { AdminService } from './admin.service';
 import { CreateAdminDto, UpdateAdminDto } from './admin.dto';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-
 @Controller('admins')
-// @UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt')) // Uncomment this line if you want to guard all routes with JWT authentication
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
-  async create(@Body() createAdminDto: CreateAdminDto) {
+  async create(@Req() req: Request, @Body() createAdminDto: CreateAdminDto) {
+    // Check if UserType is admin based on session
+    const sessionUserType = (req.session as any)?.UserType; // Type assertion to any
+
+    if (sessionUserType !== 'Admin') {
+      throw new UnauthorizedException('Only admins can create new admins');
+    }
+
+    // Use sessionUserID to set createAdminDto.UserID
+    createAdminDto.UserID = (req.session as any)?.userID; // Assuming userID is the correct property name
+
+    // Check if UserID already exists in admin table
+    const existingAdmin = await this.adminService.findByUserID(createAdminDto.UserID);
+    if (existingAdmin) {
+      throw new BadRequestException('UserID already exists in admin table');
+    }
+
+    // Create new admin
     const createdAdmin = await this.adminService.create(createAdminDto);
     return { message: 'Admin created successfully', admin: createdAdmin };
   }

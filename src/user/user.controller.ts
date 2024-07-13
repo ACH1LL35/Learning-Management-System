@@ -11,6 +11,13 @@ export class UserController {
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() createUserDto: UserDto) {
+    // Check if username already exists
+    const existingUser = await this.userService.findByUsername(createUserDto.Username);
+    if (existingUser) {
+      throw new BadRequestException('Username already exists');
+    }
+
+    // If username does not exist, create new user
     const createdUser = await this.userService.create(createUserDto);
     return { message: 'User created successfully', user: createdUser };
   }
@@ -22,7 +29,7 @@ export class UserController {
     if (!user) {
       throw new BadRequestException('Invalid username or password');
     }
-    session.userId = user.UserID.toString();
+    session.userId = user.UserID;
     session.userType = user.UserType;
     return { message: 'Login successful', user };
   }

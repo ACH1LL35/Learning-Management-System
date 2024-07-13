@@ -5,14 +5,17 @@ import { Admin } from './admin.entity';
 import { CreateAdminDto, UpdateAdminDto } from './admin.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 
-
 @Injectable()
-export class AdminService{
+export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private readonly adminRepository: Repository<Admin>,
     private readonly mailerService: MailerService,
   ) {}
+
+  async findByUserID(userID: number): Promise<Admin | undefined> {
+    return this.adminRepository.findOne({ where: { User: { UserID: userID } } });
+  }
 
   async create(createAdminDto: CreateAdminDto): Promise<Admin> {
     const admin = this.adminRepository.create(createAdminDto);
@@ -29,7 +32,10 @@ export class AdminService{
     if (!admin) {
       throw new NotFoundException(`Admin with ID ${id} not found`);
     }
+
+    // Update admin properties
     Object.assign(admin, updateAdminDto);
+
     return this.adminRepository.save(admin);
   }
 
@@ -38,6 +44,7 @@ export class AdminService{
     if (!admin) {
       throw new NotFoundException(`Admin with ID ${id} not found`);
     }
+
     await this.adminRepository.remove(admin);
   }
 
@@ -61,5 +68,4 @@ export class AdminService{
       html: '<b>Thank you for registering with us!</b>',
     });
   }
-  
 }

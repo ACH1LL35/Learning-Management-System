@@ -11,9 +11,11 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+  
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.userRepository.findOne(username as any);
+    return this.userRepository.findOne({ where:{Username: username} });
   }
+
   async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     return await bcrypt.hash(password, saltRounds);
