@@ -1,14 +1,14 @@
 import { Controller, Post, Body, Delete, Param } from '@nestjs/common';
 import { ContentApprovalService } from './contentApproval.service';
 import { CreateContentApprovalDto } from './contentApproval.dto';
-import { ContentApproval } from './contentApproval.entity'; 
+import { Content } from './contentApproval.entity'; 
 
-@Controller('content-approvals')
+@Controller('contentApproval')
 export class ContentApprovalController {
   constructor(private readonly contentApprovalService: ContentApprovalService) {}
 
   @Post()
-  async create(@Body() createDto: CreateContentApprovalDto): Promise<ContentApproval> {
+  async create(@Body() createDto: CreateContentApprovalDto): Promise<Content> {
     return this.contentApprovalService.create(createDto);
   }
 

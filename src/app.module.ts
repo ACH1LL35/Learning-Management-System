@@ -5,10 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ParentModule } from './parent/parent.module';
 import { AdminModule } from './admin/admin.module';
+import { CourseModule } from './course/course.module';
+import { ContentApprovalModule } from './course/contentApproval/contentApproval.module';
 
 @Module({
   imports: [
-    ParentModule,AdminModule,
+    ParentModule,AdminModule,CourseModule,ContentApprovalModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Course } from '../course.entity';
-import { ContentApproval } from '../contentApproval/contentApproval.entity';
+import { Content } from '../contentApproval/contentApproval.entity';
 
 @Entity()
 export class CourseMaterial {
@@ -11,9 +11,9 @@ export class CourseMaterial {
   @JoinColumn({ name: 'CourseID' })
   course: Course;
 
-  @ManyToOne(() => ContentApproval, contentApproval => contentApproval.ContentID)
+  @ManyToOne(() => Content, contentApproval => contentApproval.ContentID)
   @JoinColumn({ name: 'ContentID' })
-  contentApproval: ContentApproval;
+  contentApproval: Content;
 
   @Column()
   ContentTitle: string;

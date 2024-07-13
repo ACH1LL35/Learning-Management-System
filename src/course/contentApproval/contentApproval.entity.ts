@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Course } from '../course.entity'; 
 
 @Entity()
-export class ContentApproval {
+export class Content {
   @PrimaryGeneratedColumn()
   ContentID: number;
 
@@ -18,10 +18,4 @@ export class ContentApproval {
 
   @Column()
   ContentType: string;
-
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
-  UploadDate: Date;
-
-  @Column({ default: false })
-  Approved: boolean;
 }
