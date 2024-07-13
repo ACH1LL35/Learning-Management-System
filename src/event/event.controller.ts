@@ -1,6 +1,6 @@
 // event.controller.ts
 
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto, UpdateEventDto } from './event.dto';
 
@@ -9,6 +9,7 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async create(@Body() createEventDto: CreateEventDto) {
     return this.eventService.create(createEventDto);
   }
@@ -24,6 +25,7 @@ export class EventController {
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventService.update(+id, updateEventDto);
   }

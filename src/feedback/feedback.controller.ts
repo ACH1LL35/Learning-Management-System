@@ -1,6 +1,6 @@
 // feedback.controller.ts
 
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UsePipes, ValidationPipe } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto, UpdateFeedbackDto } from './feedback.dto';
 
@@ -9,6 +9,7 @@ export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async create(@Body() createFeedbackDto: CreateFeedbackDto) {
     return this.feedbackService.create(createFeedbackDto);
   }
@@ -24,6 +25,7 @@ export class FeedbackController {
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async update(@Param('id') id: string, @Body() updateFeedbackDto: UpdateFeedbackDto) {
     return this.feedbackService.update(+id, updateFeedbackDto);
   }

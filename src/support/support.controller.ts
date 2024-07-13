@@ -1,6 +1,6 @@
 // support.controller.ts
 
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UsePipes, ValidationPipe } from '@nestjs/common';
 import { SupportService } from './support.service';
 import { CreateSupportDto, UpdateSupportDto } from './support.dto';
 
@@ -9,6 +9,7 @@ export class SupportController {
   constructor(private readonly supportService: SupportService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async create(@Body() createSupportDto: CreateSupportDto) {
     return this.supportService.create(createSupportDto);
   }
@@ -24,6 +25,7 @@ export class SupportController {
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async update(@Param('id') id: string, @Body() updateSupportDto: UpdateSupportDto) {
     return this.supportService.update(+id, updateSupportDto);
   }

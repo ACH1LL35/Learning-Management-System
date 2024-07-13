@@ -1,6 +1,6 @@
 // faq.controller.ts
 
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { FAQService } from './faq.service';
 import { CreateFAQDto, UpdateFAQDto } from './faq.dto';
 
@@ -9,6 +9,7 @@ export class FAQController {
   constructor(private readonly faqService: FAQService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async create(@Body() createFAQDto: CreateFAQDto) {
     return this.faqService.create(createFAQDto);
   }
@@ -24,6 +25,7 @@ export class FAQController {
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
   async update(@Param('id') id: string, @Body() updateFAQDto: UpdateFAQDto) {
     return this.faqService.update(+id, updateFAQDto);
   }
