@@ -1,182 +1,101 @@
-
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { User } from '../user/user.entity';
 import { Course } from '../course/course.entity';
 
 @Entity("student")
 export class studentProfile {
+  @PrimaryGeneratedColumn()
+  StudentID: number;
 
-@PrimaryGeneratedColumn()
-StudentID:number;
+  @Column()
+  Fname: string;
 
-//foreign 
-@OneToOne(() => User, user => user.UserID)
-user: User;
+  @Column()
+  Lname: string;
 
-@Column()
-Fname :string;
-@Column()
-Lname :string;
-@Column()
-DOB :number;
-@Column()
-Email :string;
-@Column()
-Mobile :number;
-@Column()
-Gender  :string;
-@Column()
-Address :string;
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-RegistrationDate:Date;
+  @Column()
+  DOB: Date;
 
+  @Column()
+  Email: string;
+
+  @Column()
+  Mobile: string;
+
+  @Column()
+  Gender: string;
+
+  @Column()
+  Address: string;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
 }
 
-@Entity("courseEnrollments")
+@Entity('course_enrollments')
 export class CourseEnrollments {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-@PrimaryGeneratedColumn()
-EnrollmentID:number;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
+  user: User;
 
-
-//foreign
-@OneToOne(() => User, user => user.UserID)
-UserID: User;
-
-
-
-//foreign
-@OneToOne(() => Course, course => course.CourseID)
-CourseID: Course;
-
-
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-EnrollmentDate:Date;
-
+  @ManyToOne(() => Course)
+  @JoinColumn({ name: 'CourseID' })
+  course: Course;
 }
 
-@Entity("wishlist")
+@Entity()
 export class Wishlist {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-@PrimaryGeneratedColumn()
-WishlistID:number;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
+  user: User;
 
-//foreign
-@OneToOne(() => User, user => user.UserID)
-user: User;
-
-
-//foreign
-@OneToOne(() => Course, course => course.CourseID)
-course: Course;
-
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-DateAdded :Date;
-
+  @ManyToOne(() => Course)
+  @JoinColumn({ name: 'CourseID' })
+  course: Course;
 }
 
-@Entity("payments")
-export class Payments{
+@Entity()
+export class Payments {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-@PrimaryGeneratedColumn()
-PaymentID:number;
+  @ManyToOne(() => User, user => user.UserID)
+  user: User;
 
+  @Column()
+  Amount: number;
 
-//foreign
-@OneToOne(() => User, user => user.UserID)
-user: User;
-
-@Column()
-Amount :number;
-
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-PaymentDate :Date;
-
-@Column()
-PaymentType :string;
-
+  @Column()
+  PaymentType: string;
 }
 
+@Entity()
+export class Submissions {
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @ManyToOne(() => User, user => user.UserID)
+  user: User;
 
-@Entity("submissions ")
-export class Submissions{
-
-@PrimaryGeneratedColumn()
-SubmissionID:number;
-
-
-//foreign
-@OneToOne(() => User, user => user.UserID)
-user: User;
-
-/*
-@Column()
-//foreign key 
-EvaluationID :number;
-
-
-@Column()
-//foreign key 
-EvaluationType:string;
-
-*/
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-SubmissionDate :Date;
-
-//file *****************
-@Column()
-SubmissionContent :string 
-
+  @Column()
+  SubmissionContent: string;
 }
 
-@Entity("achievements")
+@Entity()
 export class Achievements {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-@PrimaryGeneratedColumn()
-AchievementID:number;
+  @ManyToOne(() => User, user => user.UserID)
+  user: User;
 
-
-//foreign
-@OneToOne(() => User, user => user.UserID)
-user: User;
-
-
-
-@Column()
-AchievementType:string;
-
-
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-AchievementDate:Date;
-
-
+  @Column()
+  AchievementType: string;
 }
-
-@Entity("comment")
-export class Comment  {
-
-@PrimaryGeneratedColumn()
-CommentID:number;
-
-
-//foreign
-@OneToOne(() => User, user => user.UserID)
-user: User;
-
-/*
-OneTomany 
-@Column()
-//foreign key 
-PostID:number;
-*/
-
-@Column()
-Comment:string;
-
-
-@Column({ default: () => 'CURRENT_TIMESTAMP' })
-CommentDate:Date;
-
-}
-

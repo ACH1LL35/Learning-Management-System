@@ -8,7 +8,6 @@ export class CreateEventDto {
   Description: string;
 
   @IsNotEmpty()
-  @IsDateString()
   EventDate: Date;
 
   @IsNotEmpty()
@@ -22,7 +21,6 @@ export class UpdateEventDto {
   Description?: string;
 
   @IsOptional()
-  @IsDateString()
   EventDate?: Date;
 
   @IsOptional()

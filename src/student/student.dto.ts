@@ -1,104 +1,113 @@
-import {IsNotEmpty, Matches, MaxLength, MinLength,IsNumber,IsString} from "class-validator";
-import {User} from '../user/user.entity'
-import {Course} from '../course/course.entity'
+import { IsNotEmpty, IsEmail, IsNumber, IsString } from "class-validator";
 
-export class StudentDTO{
+export class CreateStudentDto {
+  @IsNotEmpty()
+  Fname: string;
 
-    
-    @Matches(/^[A-Za-z]+$/,{message: "Please enter a valid name"})
-    @IsNotEmpty({ message: 'Username is required'})
-    Username:string;
+  @IsNotEmpty()
+  Lname: string;
 
+  @IsNotEmpty()
+  DOB: Date;
 
-    @IsNotEmpty({ message: 'Email is required'})
-    @Matches(/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+xyz$/, { message: 'Email must be a valid .xyz domain.'})
-    email:string;
+  @IsNotEmpty()
+  @IsEmail()
+  Email: string;
 
-    @IsNotEmpty({ message: 'Email is required'})
-    @MinLength(8)
-    Password :string;
- 
+  @IsNotEmpty()
+  Mobile: string;
 
+  @IsNotEmpty()
+  Gender: string;
+
+  @IsNotEmpty()
+  Address: string;
 }
 
+export class UpdateStudentDto {
+  @IsNotEmpty()
+  Fname?: string;
 
+  @IsNotEmpty()
+  Lname?: string;
 
-export class StudentUpdateDTO{
-    
-    @Matches(/^[A-Za-z]+$/,{message: "Please enter a valid name"})
-    @IsNotEmpty({ message: 'Username is required'})
-    Username:string;
+  @IsNotEmpty()
+  DOB?: Date;
 
+  @IsNotEmpty()
+  @IsEmail()
+  Email?: string;
 
-    @IsNotEmpty({ message: 'Email is required'})
-    @Matches(/^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+xyz$/, { message: 'Email must be a valid .xyz domain.'})
-    email:string;
+  @IsNotEmpty()
+  Mobile?: string;
 
-    @IsNotEmpty({ message: 'Email is required'})
-    @MinLength(8)
-    Password :string;
-   
+  @IsNotEmpty()
+  Gender?: string;
+
+  @IsNotEmpty()
+  Address?: string;
 }
 
 export class CreateCourseEnrollmentDto {
-    @IsNotEmpty()
-    @IsNumber()
-    UserID: number;
-  
-    @IsNotEmpty()
-    @IsNumber()
-    CourseID: number;
-  }
+  @IsNotEmpty()
+  @IsNumber()
+  UserID: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  CourseID: number;
+}
 
-  export class CreateWishlistDto {
-    @IsNotEmpty()
-    @IsNumber()
-    user: number;
-  
-    @IsNotEmpty()
-    @IsNumber()
-    course: number;
-  }
-  export class CreatePaymentDto {
-    @IsNotEmpty()
-    @IsNumber()
-    user: number;
-  
-    @IsNotEmpty()
-    @IsNumber()
-    Amount: number;
-  
-    @IsNotEmpty()
-    @IsString()
-    PaymentType: string;
-  }
+export class CreateWishlistDto {
+  @IsNotEmpty()
+  @IsNumber()
+  user: number;
 
-  export class CreateSubmissionDto {
-    @IsNotEmpty()
-    @IsNumber()
-    user: number;
-  
-    @IsNotEmpty()
-    @IsString()
-    SubmissionContent: string;
-  }
+  @IsNotEmpty()
+  @IsNumber()
+  course: number;
+}
 
-  export class CreateAchievementDto {
-    @IsNotEmpty()
-    @IsNumber()
-    user: number;
-  
-    @IsNotEmpty()
-    @IsString()
-    AchievementType: string;
-  }
-  export class CreateCommentDto {
-    @IsNotEmpty()
-    @IsNumber()
-    user: number;
-  
-    @IsNotEmpty()
-    @IsString()
-    Comment: string;
-  }
+export class CreatePaymentDto {
+  @IsNotEmpty()
+  @IsNumber()
+  user: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  Amount: number;
+
+  @IsNotEmpty()
+  @IsString()
+  PaymentType: string;
+}
+
+export class CreateSubmissionDto {
+  @IsNotEmpty()
+  @IsNumber()
+  user: number;
+
+  @IsNotEmpty()
+  @IsString()
+  SubmissionContent: string;
+}
+
+export class CreateAchievementDto {
+  @IsNotEmpty()
+  @IsNumber()
+  user: number;
+
+  @IsNotEmpty()
+  @IsString()
+  AchievementType: string;
+}
+
+export class CreateCommentDto {
+  @IsNotEmpty()
+  @IsNumber()
+  user: number;
+
+  @IsNotEmpty()
+  @IsString()
+  Comment: string;
+}

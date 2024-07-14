@@ -1,70 +1,71 @@
-import { Injectable } from "@nestjs/common";
-import { studentProfile,CourseEnrollments,Wishlist,Payments,Submissions,Achievements} from './student.entity';
-import {User} from '../user/user.entity'
-import {Course} from '../course/course.entity'
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { MailerService } from '@nestjs-modules/mailer';
-import { StudentDTO, StudentUpdateDTO,CreateCourseEnrollmentDto,CreateWishlistDto} from './student.dto';
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { studentProfile, CourseEnrollments, Wishlist, Payments, Submissions, Achievements } from "./student.entity";
+import { CreateStudentDto, UpdateStudentDto, CreateCourseEnrollmentDto, CreateWishlistDto, CreatePaymentDto, CreateSubmissionDto, CreateAchievementDto } from "./student.dto";
+import { User } from "../user/user.entity";
+import * as session from "express-session";
 
 @Injectable()
-export class StudentService{
-
+export class StudentService {
   constructor(
     @InjectRepository(studentProfile)
     private readonly studentRepository: Repository<studentProfile>,
-    private readonly mailerService: MailerService,
   ) {}
- /*     
-    //Sgn Up 
-    async create(studentDto: StudentDTO): Promise<studentProfile> {
-      const student= this.studentRepository.create(studentDto);
-      const savedStudent = await this.studentRepository.save(student);
-  
-      // Send registration email
-      //await this.sendRegistrationEmail(savedParent.Email);
-  
-      return savedStudent;
+
+  async create(createStudentDto: CreateStudentDto, userId: number): Promise<studentProfile> {
+    const student = this.studentRepository.create({
+      ...createStudentDto,
+      user: { UserID: userId } as User,
+    });
+    return await this.studentRepository.save(student);
+  }
+
+  async update(id: number, updateStudentDto: UpdateStudentDto, userId: number): Promise<studentProfile> {
+    const student = await this.studentRepository.findOne({ where: { StudentID: id, user: { UserID: userId } } });
+
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
     }
-    */    
-       
+
+    Object.assign(student, updateStudentDto);
+    return await this.studentRepository.save(student);
+  }
 }
 
 @Injectable()
 export class CourseEnrollmentsService {
   constructor(
     @InjectRepository(CourseEnrollments)
-    private courseEnrollmentsRepository: Repository<CourseEnrollments>,
+    private readonly courseEnrollmentsRepository: Repository<CourseEnrollments>,
   ) {}
 
   async getAllCourseEnrollments(): Promise<CourseEnrollments[]> {
-    return await this.courseEnrollmentsRepository.find();
+    return await this.courseEnrollmentsRepository.find({ relations: ['user', 'course'] });
   }
 
-  async createCourseEnrollment(
-    courseEnrollment: CourseEnrollments,
-  ): Promise<CourseEnrollments> {
+  async createCourseEnrollment(createCourseEnrollmentDto: CreateCourseEnrollmentDto): Promise<CourseEnrollments> {
+    const courseEnrollment = this.courseEnrollmentsRepository.create({
+      user: { UserID: createCourseEnrollmentDto.UserID } as User,
+      course: { id: createCourseEnrollmentDto.CourseID } as any, // Assuming Course entity has 'id' field
+    });
     return await this.courseEnrollmentsRepository.save(courseEnrollment);
   }
 
- 
   async deleteCourseEnrollment(id: number): Promise<void> {
-    const courseEnrollment = await this.courseEnrollmentsRepository.findOne({ where: { EnrollmentID: id } });
-    await this.courseEnrollmentsRepository.remove(courseEnrollment);
+    await this.courseEnrollmentsRepository.delete(id);
   }
-  
-  
 }
 
 @Injectable()
 export class WishlistService {
   constructor(
     @InjectRepository(Wishlist)
-    private wishlistRepository: Repository<Wishlist>,
+    private readonly wishlistRepository: Repository<Wishlist>,
   ) {}
 
   async getAllWishlist(): Promise<Wishlist[]> {
-    return await this.wishlistRepository.find();
+    return await this.wishlistRepository.find({ relations: ['user', 'course'] });
   }
 
   async createWishlist(wishlist: Wishlist): Promise<Wishlist> {
@@ -72,13 +73,17 @@ export class WishlistService {
   }
 
   async updateWishlist(id: number, wishlist: Wishlist): Promise<Wishlist> {
-    await this.wishlistRepository.update(id, wishlist);
-    return await this.wishlistRepository.findOne({ where: { WishlistID: id } });
+    const existingWishlist = await this.wishlistRepository.findOne({ where: { id } });
+    if (!existingWishlist) {
+      throw new NotFoundException(`Wishlist item with ID ${id} not found`);
+    }
+
+    Object.assign(existingWishlist, wishlist);
+    return await this.wishlistRepository.save(existingWishlist);
   }
 
   async deleteWishlist(id: number): Promise<void> {
-    const wishlist = await this.wishlistRepository.findOne({ where: { WishlistID: id } });
-    await this.wishlistRepository.remove(wishlist);
+    await this.wishlistRepository.delete(id);
   }
 }
 
@@ -86,11 +91,11 @@ export class WishlistService {
 export class PaymentsService {
   constructor(
     @InjectRepository(Payments)
-    private paymentsRepository: Repository<Payments>,
+    private readonly paymentsRepository: Repository<Payments>,
   ) {}
 
   async getAllPayments(): Promise<Payments[]> {
-    return await this.paymentsRepository.find();
+    return await this.paymentsRepository.find({ relations: ['user'] });
   }
 
   async createPayment(payment: Payments): Promise<Payments> {
@@ -98,43 +103,47 @@ export class PaymentsService {
   }
 
   async updatePayment(id: number, payment: Payments): Promise<Payments> {
-    await this.paymentsRepository.update(id, payment);
-    return await this.paymentsRepository.findOne({ where: { PaymentID: id } });
+    const existingPayment = await this.paymentsRepository.findOne({ where: { id } });
+    if (!existingPayment) {
+      throw new NotFoundException(`Payment with ID ${id} not found`);
+    }
+
+    Object.assign(existingPayment, payment);
+    return await this.paymentsRepository.save(existingPayment);
   }
 
   async deletePayment(id: number): Promise<void> {
-    const payment = await this.paymentsRepository.findOne({ where: { PaymentID: id } });
-    await this.paymentsRepository.remove(payment);
+    await this.paymentsRepository.delete(id);
   }
 }
+
 @Injectable()
 export class SubmissionsService {
   constructor(
     @InjectRepository(Submissions)
-    private submissionsRepository: Repository<Submissions>,
+    private readonly submissionsRepository: Repository<Submissions>,
   ) {}
 
   async getAllSubmissions(): Promise<Submissions[]> {
-    return await this.submissionsRepository.find();
+    return await this.submissionsRepository.find({ relations: ['user'] });
   }
 
-  async createSubmission(
-    submission: Submissions,
-  ): Promise<Submissions> {
+  async createSubmission(submission: Submissions): Promise<Submissions> {
     return await this.submissionsRepository.save(submission);
   }
 
-  async updateSubmission(
-    id: number,
-    submission: Submissions,
-  ): Promise<Submissions> {
-    await this.submissionsRepository.update(id, submission);
-    return await this.submissionsRepository.findOne({ where: { SubmissionID: id } });
+  async updateSubmission(id: number, submission: Submissions): Promise<Submissions> {
+    const existingSubmission = await this.submissionsRepository.findOne({ where: { id } });
+    if (!existingSubmission) {
+      throw new NotFoundException(`Submission with ID ${id} not found`);
+    }
+
+    Object.assign(existingSubmission, submission);
+    return await this.submissionsRepository.save(existingSubmission);
   }
 
   async deleteSubmission(id: number): Promise<void> {
-    const submission = await this.submissionsRepository.findOne({ where: { SubmissionID: id } });
-    await this.submissionsRepository.remove(submission);
+    await this.submissionsRepository.delete(id);
   }
 }
 
@@ -142,47 +151,28 @@ export class SubmissionsService {
 export class AchievementsService {
   constructor(
     @InjectRepository(Achievements)
-    private achievementsRepository: Repository<Achievements>,
+    private readonly achievementsRepository: Repository<Achievements>,
   ) {}
 
   async getAllAchievements(): Promise<Achievements[]> {
-    return await this.achievementsRepository.find();
+    return await this.achievementsRepository.find({ relations: ['user'] });
   }
 
-  async createAchievement(
-    achievement: Achievements,
-  ): Promise<Achievements> {
+  async createAchievement(achievement: Achievements): Promise<Achievements> {
     return await this.achievementsRepository.save(achievement);
   }
 
-  async updateAchievement(
-    id: number,
-    achievement: Achievements,
-  ): Promise<Achievements> {
-    await this.achievementsRepository.update(id, achievement);
-    return await this.achievementsRepository.findOne({ where: { AchievementID: id } });
+  async updateAchievement(id: number, achievement: Achievements): Promise<Achievements> {
+    const existingAchievement = await this.achievementsRepository.findOne({ where: { id } });
+    if (!existingAchievement) {
+      throw new NotFoundException(`Achievement with ID ${id} not found`);
+    }
+
+    Object.assign(existingAchievement, achievement);
+    return await this.achievementsRepository.save(existingAchievement);
   }
 
   async deleteAchievement(id: number): Promise<void> {
-    const achievement = await this.achievementsRepository.findOne({ where: { AchievementID: id } });
-    await this.achievementsRepository.remove(achievement);
+    await this.achievementsRepository.delete(id);
   }
-}
-
-@Injectable()
-export class CommentService {
-  constructor(
-    @InjectRepository(Comment)
-    private commentRepository: Repository<Comment>,
-  ) {}
-
-  async getAllComments(): Promise<Comment[]> {
-    return await this.commentRepository.find();
-  }
-
-  async createComment(comment: Comment): Promise<Comment> {
-    return await this.commentRepository.save(comment);
-  }
-
-
 }
