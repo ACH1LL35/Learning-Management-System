@@ -13,13 +13,14 @@ import { ReportingModule } from './admin/report/report.module';
 import { InstructorModule } from './instructor/instructor.module';
 import { EventModule } from './event/event.module';
 import { FAQModule } from './faq/faq.module';
-// import { StudentModule } from './student/student.module';
+import { ConsentFormModule } from './parent/consent-form.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
     ParentModule,AdminModule,CourseModule,InstructorModule,UserModule,
     ContentApprovalModule,ReportingModule,EventModule,CourseMaterialModule,
-    FAQModule,
+    FAQModule,ConsentFormModule,StudentModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
