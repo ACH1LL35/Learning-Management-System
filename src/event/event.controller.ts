@@ -1,5 +1,3 @@
-// event.controller.ts
-
 import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto, UpdateEventDto } from './event.dto';

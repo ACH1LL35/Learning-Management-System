@@ -1,5 +1,3 @@
-// faq.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FAQ } from './faq.entity';

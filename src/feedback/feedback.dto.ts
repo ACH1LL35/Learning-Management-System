@@ -1,5 +1,3 @@
-// feedback.dto.ts
-
 import { IsNotEmpty, IsString, IsDate, IsNumber } from 'class-validator';
 
 export class CreateFeedbackDto {

@@ -1,5 +1,3 @@
-// faq.controller.ts
-
 import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { FAQService } from './faq.service';
 import { CreateFAQDto, UpdateFAQDto } from './faq.dto';

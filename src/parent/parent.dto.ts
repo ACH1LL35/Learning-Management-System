@@ -12,12 +12,12 @@ export class ParentDto {
   Email: string;
 
   @IsNotEmpty()
-  @IsMobilePhone() // Ensures the mobile number is valid
+  @IsMobilePhone()
   Mobile: string;
 
   @IsNotEmpty()
-  @MinLength(6) // Minimum length for password
-  Password: string; // Add password field
+  @MinLength(6)
+  Password: string;
 }
 
 export class UpdateParentDto {
@@ -34,10 +34,10 @@ export class UpdateParentDto {
   Email?: string;
 
   @IsOptional()
-  @IsMobilePhone() // Ensures the mobile number is valid
+  @IsMobilePhone()
   Mobile?: string;
 
   @IsOptional()
-  @MinLength(6) // Minimum length for password
-  Password?: string; // Add password field
+  @MinLength(6)
+  Password?: string;
 }
