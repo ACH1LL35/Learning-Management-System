@@ -66,7 +66,8 @@ export class Payments {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.UserID)
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
   user: User;
 
   @Column()
@@ -81,7 +82,8 @@ export class Submissions {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.UserID)
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
   user: User;
 
   @Column()
@@ -93,7 +95,8 @@ export class Achievements {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.UserID)
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
   user: User;
 
   @Column()
