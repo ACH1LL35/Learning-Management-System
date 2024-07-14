@@ -1,7 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsDateString } from 'class-validator';
 
-export class CreateConsentFormDto {
+export class ConsentFormDto {
   @IsNotEmpty()
-  @IsString()
-  fileName: string;
+  FileName: string;
+
+  @IsDateString()
+  UploadDate: Date;
 }

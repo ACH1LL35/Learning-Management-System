@@ -3,11 +3,14 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class ConsentForm {
   @PrimaryGeneratedColumn()
-  id: number;
+  ConsentFormID: number;
 
   @Column()
-  fileName: string;
+  FileName: string;
 
-  @Column()
-  filePath: string;
+  @Column({ type: 'timestamp' })
+  UploadDate: Date;
+
+  @Column({ nullable: true })
+  FilePath: string;
 }

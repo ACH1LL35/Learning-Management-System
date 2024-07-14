@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateConsentFormDto } from './create-consent-form.dto';
+import { ConsentForm } from './consent-form.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createWriteStream } from 'fs';
-import { ConsentForm } from './consent-form.entity';
+import { ConsentFormDto } from './create-consent-form.dto';
 
 @Injectable()
 export class ConsentFormService {
@@ -14,16 +14,10 @@ export class ConsentFormService {
     private readonly consentFormRepository: Repository<ConsentForm>,
   ) {}
 
-  async create(userId: number, userType: string, createConsentFormDto: CreateConsentFormDto, file: Express.Multer.File): Promise<ConsentForm> {
-    // Check session for authorization
-    if (!userId || userType !== 'Parents') {
-      throw new UnauthorizedException('You must be logged in as a Parent to upload consent form');
-    }
+  async create(consentFormDto: ConsentFormDto, file: Express.Multer.File): Promise<ConsentForm> {
+    const { FileName } = consentFormDto;
 
-    const { fileName } = createConsentFormDto;
-
-    // File upload logic
-    const uploadPath = './uploads/consent-forms/';
+    const uploadPath = './uploads/consent-forms';
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -37,32 +31,32 @@ export class ConsentFormService {
       fileStream.end(file.buffer);
     });
 
-    // Create and save consent form entity
     const consentForm = this.consentFormRepository.create({
-      fileName,
-      filePath,
+      FileName,
+      UploadDate: new Date(),
+      FilePath: filePath,
     });
 
     return this.consentFormRepository.save(consentForm);
   }
 
-  async delete(id: number): Promise<void> {
-    const consentForm = await this.consentFormRepository.findOne({where:{id:id}});
+  async delete(consentFormID: number): Promise<void> {
+    const consentForm = await this.consentFormRepository.findOne({ where: { ConsentFormID: consentFormID } });
     if (!consentForm) {
-      throw new NotFoundException(`Consent form with ID ${id} not found`);
+      throw new NotFoundException(`Consent Form with ID ${consentFormID} not found`);
     }
 
-    if (consentForm.filePath) {
-      fs.unlinkSync(consentForm.filePath);
+    if (consentForm.FilePath) {
+      fs.unlinkSync(consentForm.FilePath);
     }
 
-    await this.consentFormRepository.delete(id);
+    await this.consentFormRepository.delete(consentFormID);
   }
 
-  async findOne(id: number): Promise<ConsentForm> {
-    const consentForm = await this.consentFormRepository.findOne({where:{id:id}});
+  async findOne(consentFormID: number): Promise<ConsentForm> {
+    const consentForm = await this.consentFormRepository.findOne({ where: { ConsentFormID: consentFormID } });
     if (!consentForm) {
-      throw new NotFoundException(`Consent form with ID ${id} not found`);
+      throw new NotFoundException(`Consent Form with ID ${consentFormID} not found`);
     }
     return consentForm;
   }
