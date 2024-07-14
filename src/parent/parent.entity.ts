@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from 'src/user/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column,ManyToOne,JoinColumn } from 'typeorm';
 
 @Entity()
 export class Parent {
@@ -7,6 +8,10 @@ export class Parent {
 
   @Column({ nullable: true })
   StudentID: number;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
+  User: User;
 
   @Column()
   Fname: string;
