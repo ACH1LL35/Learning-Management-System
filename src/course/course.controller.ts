@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Body, Param, Session, UsePipes, ValidationPipe, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Body, Param, Session, UsePipes, ValidationPipe, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 
@@ -33,5 +33,10 @@ export class CourseController {
 
     const updatedCourse = await this.courseService.update(id, updateCourseDto);
     return { message: 'Course updated successfully', course: updatedCourse };
+  }
+
+  @Get()
+  async getAllCourses() {
+    return this.courseService.getAllCourses();
   }
 }

@@ -1,36 +1,23 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, Get, Session, UsePipes, ValidationPipe } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
-import { CreateFeedbackDto, UpdateFeedbackDto } from './feedback.dto';
+import { CreateFeedbackDto } from './feedback.dto';
 
-@Controller('feedbacks')
+@Controller('feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
-  async create(@Body() createFeedbackDto: CreateFeedbackDto) {
-    return this.feedbackService.create(createFeedbackDto);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(
+    @Session() session: Record<string, any>,
+    @Body() createFeedbackDto: CreateFeedbackDto,
+  ) {
+    const { UserId, UserType } = session;
+    return this.feedbackService.create(UserId, createFeedbackDto, UserType);
   }
 
   @Get()
-  async findAll() {
-    return this.feedbackService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.feedbackService.findOne(+id);
-  }
-
-  @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
-  async update(@Param('id') id: string, @Body() updateFeedbackDto: UpdateFeedbackDto) {
-    return this.feedbackService.update(+id, updateFeedbackDto);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    await this.feedbackService.delete(+id);
-    return { message: `Feedback with ID ${id} deleted successfully` };
+  async getAll() {
+    return this.feedbackService.getAll();
   }
 }

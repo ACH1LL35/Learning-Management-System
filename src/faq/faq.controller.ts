@@ -1,36 +1,43 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Delete, Patch, Body, Param, Session, UsePipes, ValidationPipe, Get, UnauthorizedException } from '@nestjs/common';
 import { FAQService } from './faq.service';
 import { CreateFAQDto, UpdateFAQDto } from './faq.dto';
 
-@Controller('faqs')
+@Controller('faq')
 export class FAQController {
   constructor(private readonly faqService: FAQService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
-  async create(@Body() createFAQDto: CreateFAQDto) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(
+    @Body() createFAQDto: CreateFAQDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
     return this.faqService.create(createFAQDto);
   }
 
-  @Get()
-  async findAll() {
-    return this.faqService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.faqService.findOne(+id);
-  }
-
-  @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
-  async update(@Param('id') id: string, @Body() updateFAQDto: UpdateFAQDto) {
-    return this.faqService.update(+id, updateFAQDto);
+  @Patch(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async update(
+    @Param('id') id: number,
+    @Body() updateFAQDto: UpdateFAQDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.faqService.update(id, updateFAQDto, UserType);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    await this.faqService.delete(+id);
-    return { message: `FAQ with ID ${id} deleted successfully` };
+  async delete(
+    @Param('id') id: number,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.faqService.delete(id, UserType);
+  }
+
+  @Get()
+  async getAll() {
+    return this.faqService.getAllFAQs();
   }
 }

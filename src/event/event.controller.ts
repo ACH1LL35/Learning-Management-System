@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Delete, Patch, Body, Param, Session, UsePipes, ValidationPipe, Get, UnauthorizedException } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto, UpdateEventDto } from './event.dto';
 
@@ -7,30 +7,37 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
-  async create(@Body() createEventDto: CreateEventDto) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(
+    @Body() createEventDto: CreateEventDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
     return this.eventService.create(createEventDto);
   }
 
-  @Get()
-  async findAll() {
-    return this.eventService.findAll();
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.eventService.findOne(+id);
-  }
-
-  @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
-  async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventService.update(+id, updateEventDto);
+  @Patch(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async update(
+    @Param('id') id: number,
+    @Body() updateEventDto: UpdateEventDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.eventService.update(id, updateEventDto, UserType);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    await this.eventService.delete(+id);
-    return { message: `Event with ID ${id} deleted successfully` };
+  async delete(
+    @Param('id') id: number,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.eventService.delete(id, UserType);
+  }
+
+  @Get()
+  async getAll() {
+    return this.eventService.getAllEvents();
   }
 }

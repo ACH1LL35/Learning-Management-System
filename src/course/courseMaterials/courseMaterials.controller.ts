@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Body, Param, Session, UsePipes, ValidationPipe, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Delete, Body, Param, Session, UsePipes, ValidationPipe, UnauthorizedException, Get } from '@nestjs/common';
 import { CourseMaterialService } from './courseMaterials.service';
 import { CreateCourseMaterialDto, DeleteCourseMaterialDto } from './courseMaterials.dto';
 
@@ -23,5 +23,12 @@ export class CourseMaterialController {
   ) {
     const { UserType } = session;
     return this.materialService.delete({ MaterialID: id }, UserType);
+  }
+
+  @Get()
+  async getAll(
+    @Session() session: Record<string, any>,
+  ) {
+    return this.materialService.getAllCourseMaterials();
   }
 }

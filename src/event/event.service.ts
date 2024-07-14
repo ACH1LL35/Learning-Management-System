@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from './event.entity';
@@ -16,26 +16,38 @@ export class EventService {
     return this.eventRepository.save(event);
   }
 
-  async findAll(): Promise<Event[]> {
-    return this.eventRepository.find();
-  }
+  async update(eventId: number, updateEventDto: UpdateEventDto, userType: string): Promise<Event> {
+    const event = await this.eventRepository.findOne({where:{EventID:eventId}});
 
-  async findOne(EventID: number): Promise<Event> {
-    const event = await this.eventRepository.findOne({where:{EventID:EventID}});
     if (!event) {
-      throw new NotFoundException(`Event with ID ${EventID} not found`);
+      throw new BadRequestException(`Event with ID ${eventId} not found`);
     }
-    return event;
-  }
 
-  async update(EventID: number, updateEventDto: UpdateEventDto): Promise<Event> {
-    const event = await this.findOne(EventID);
+    // Check if user is Admin or Instructor
+    if (userType !== 'Admin' && userType !== 'Instructor') {
+      throw new UnauthorizedException('You must be logged in as an admin or instructor to update event details');
+    }
+
     Object.assign(event, updateEventDto);
     return this.eventRepository.save(event);
   }
 
-  async delete(EventID: number): Promise<void> {
-    const event = await this.findOne(EventID);
+  async delete(eventId: number, userType: string): Promise<void> {
+    const event = await this.eventRepository.findOne({where:{EventID:eventId}});
+
+    if (!event) {
+      throw new BadRequestException(`Event with ID ${eventId} not found`);
+    }
+
+    // Check if user is Admin
+    if (userType !== 'Admin') {
+      throw new UnauthorizedException('You must be logged in as an admin to delete events');
+    }
+
     await this.eventRepository.remove(event);
+  }
+
+  async getAllEvents(): Promise<Event[]> {
+    return this.eventRepository.find();
   }
 }

@@ -1,26 +1,22 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty,IsOptional } from 'class-validator';
 
 export class CreateFAQDto {
   @IsNotEmpty()
-  @IsString()
   Question: string;
 
   @IsNotEmpty()
-  @IsString()
   Answer: string;
 
   @IsNotEmpty()
-  @IsString()
   Category: string;
 }
-
 export class UpdateFAQDto {
-  @IsString()
+  @IsOptional()
   Question?: string;
 
-  @IsString()
+  @IsOptional()
   Answer?: string;
 
-  @IsString()
+  @IsOptional()
   Category?: string;
 }

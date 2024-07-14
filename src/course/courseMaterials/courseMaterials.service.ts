@@ -31,4 +31,8 @@ export class CourseMaterialService {
 
     await this.materialRepository.remove(material);
   }
+
+  async getAllCourseMaterials(): Promise<CourseMaterial[]> {
+    return this.materialRepository.find();
+  }
 }

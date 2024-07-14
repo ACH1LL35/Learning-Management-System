@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FAQ } from './faq.entity';
@@ -16,26 +16,38 @@ export class FAQService {
     return this.faqRepository.save(faq);
   }
 
-  async findAll(): Promise<FAQ[]> {
-    return this.faqRepository.find();
-  }
+  async update(faqId: number, updateFAQDto: UpdateFAQDto, userType: string): Promise<FAQ> {
+    const faq = await this.faqRepository.findOne({where:{FAQID:faqId}});
 
-  async findOne(FAQID: number): Promise<FAQ> {
-    const faq = await this.faqRepository.findOne({where:{FAQID:FAQID}});
     if (!faq) {
-      throw new NotFoundException(`FAQ with ID ${FAQID} not found`);
+      throw new BadRequestException(`FAQ with ID ${faqId} not found`);
     }
-    return faq;
-  }
 
-  async update(FAQID: number, updateFAQDto: UpdateFAQDto): Promise<FAQ> {
-    const faq = await this.findOne(FAQID);
+    // Check if user is Admin
+    if (userType !== 'Admin') {
+      throw new UnauthorizedException('You must be logged in as an admin to update FAQ details');
+    }
+
     Object.assign(faq, updateFAQDto);
     return this.faqRepository.save(faq);
   }
 
-  async delete(FAQID: number): Promise<void> {
-    const faq = await this.findOne(FAQID);
+  async delete(faqId: number, userType: string): Promise<void> {
+    const faq = await this.faqRepository.findOne({where:{FAQID:faqId}});
+
+    if (!faq) {
+      throw new BadRequestException(`FAQ with ID ${faqId} not found`);
+    }
+
+    // Check if user is Admin
+    if (userType !== 'Admin') {
+      throw new UnauthorizedException('You must be logged in as an admin to delete FAQs');
+    }
+
     await this.faqRepository.remove(faq);
+  }
+
+  async getAllFAQs(): Promise<FAQ[]> {
+    return this.faqRepository.find();
   }
 }

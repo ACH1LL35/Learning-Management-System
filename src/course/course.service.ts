@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Course } from './course.entity';
@@ -17,7 +17,7 @@ export class CourseService {
   }
 
   async update(courseId: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
-    const course = await this.courseRepository.findOne({where:{CourseID:courseId}});
+    const course = await this.courseRepository.findOne({where: {CourseID:courseId}});
 
     if (!course) {
       throw new BadRequestException(`Course with ID ${courseId} not found`);
@@ -25,5 +25,9 @@ export class CourseService {
 
     Object.assign(course, updateCourseDto);
     return this.courseRepository.save(course);
+  }
+
+  async getAllCourses(): Promise<Course[]> {
+    return this.courseRepository.find();
   }
 }

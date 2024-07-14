@@ -1,41 +1,40 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Feedback } from './feedback.entity';
-import { CreateFeedbackDto, UpdateFeedbackDto } from './feedback.dto';
+import { User } from '../user/user.entity';
+import { CreateFeedbackDto } from './feedback.dto';
 
 @Injectable()
 export class FeedbackService {
   constructor(
     @InjectRepository(Feedback)
     private readonly feedbackRepository: Repository<Feedback>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
-    const feedback = this.feedbackRepository.create(createFeedbackDto);
-    return this.feedbackRepository.save(feedback);
-  }
+  async create(userId: number, createFeedbackDto: CreateFeedbackDto, userType: string): Promise<Feedback> {
+    const user = await this.userRepository.findOne({where:{UserID:userId}});
 
-  async findAll(): Promise<Feedback[]> {
-    return this.feedbackRepository.find({ relations: ['User'] });
-  }
-
-  async findOne(FeedbackID: number): Promise<Feedback> {
-    const feedback = await this.feedbackRepository.findOne({where:{FeedbackID:FeedbackID}});
-    if (!feedback) {
-      throw new NotFoundException(`Feedback with ID ${FeedbackID} not found`);
+    if (!user) {
+      throw new UnauthorizedException('Invalid user');
     }
-    return feedback;
-  }
 
-  async update(FeedbackID: number, updateFeedbackDto: UpdateFeedbackDto): Promise<Feedback> {
-    const feedback = await this.findOne(FeedbackID);
-    Object.assign(feedback, updateFeedbackDto);
+    // Check if user is Student, Instructor, or Parent
+    if (userType !== 'Student' && userType !== 'Instructor' && userType !== 'Parent') {
+      throw new UnauthorizedException('You must be logged in as a student, instructor, or parent to create feedback');
+    }
+
+    const feedback = new Feedback();
+    feedback.User = user;
+    feedback.FeedbackContent = createFeedbackDto.FeedbackContent;
+    feedback.FeedbackDate = new Date();
+
     return this.feedbackRepository.save(feedback);
   }
 
-  async delete(FeedbackID: number): Promise<void> {
-    const feedback = await this.findOne(FeedbackID);
-    await this.feedbackRepository.remove(feedback);
+  async getAll(): Promise<Feedback[]> {
+    return this.feedbackRepository.find({ relations: ['User'] });
   }
 }
