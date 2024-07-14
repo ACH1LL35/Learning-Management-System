@@ -12,12 +12,11 @@ export class Course {
   @Column()
   Description: string;
 
-  // @ManyToOne(() => Instructor)
-  // @JoinColumn({ name: 'InstructorID' })
-  @Column()
-  InstructorID: number;
+  @ManyToOne(() => Instructor)
+  @JoinColumn({ name: 'InstructorID' })
+  Instructor: Instructor;
 
-  @Column()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   EnrollmentDate: Date;
 
   @Column()

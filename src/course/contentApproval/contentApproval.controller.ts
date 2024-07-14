@@ -1,19 +1,27 @@
-import { Controller, Post, Body, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Delete, Body, Session, UsePipes, ValidationPipe, Param, UnauthorizedException } from '@nestjs/common';
 import { ContentApprovalService } from './contentApproval.service';
-import { CreateContentApprovalDto } from './contentApproval.dto';
-import { Content } from './contentApproval.entity'; 
+import { CreateContentApprovalDto, DeleteContentApprovalDto } from './contentApproval.dto';
 
-@Controller('contentApproval')
+@Controller('content-approval')
 export class ContentApprovalController {
-  constructor(private readonly contentApprovalService: ContentApprovalService) {}
+  constructor(private readonly contentService: ContentApprovalService) {}
 
   @Post()
-  async create(@Body() createDto: CreateContentApprovalDto): Promise<Content> {
-    return this.contentApprovalService.create(createDto);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(
+    @Body() createContentDto: CreateContentApprovalDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.contentService.create(createContentDto, UserType);
   }
 
   @Delete(':id')
-  async delete(@Param('id') contentID: number): Promise<void> {
-    await this.contentApprovalService.delete(contentID);
+  async delete(
+    @Param('id') id: number,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.contentService.delete({ ContentID: id }, UserType);
   }
 }

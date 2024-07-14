@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateContentApprovalDto {
   @IsNotEmpty()
@@ -14,13 +14,7 @@ export class CreateContentApprovalDto {
   ContentType: string;
 }
 
-export class UpdateContentApprovalDto {
+export class DeleteContentApprovalDto {
   @IsNotEmpty()
-  ContentTitle: string;
-
-  @IsNotEmpty()
-  ContentDescription: string;
-
-  @IsNotEmpty()
-  ContentType: string;
+  ContentID: number;
 }

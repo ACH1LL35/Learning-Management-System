@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Course } from '../course.entity'; 
+import { Course } from '../course.entity';
 
 @Entity()
-export class Content {
+export class ContentApproval {
   @PrimaryGeneratedColumn()
   ContentID: number;
 

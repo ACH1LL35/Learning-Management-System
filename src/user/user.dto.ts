@@ -1,4 +1,12 @@
-import { IsNotEmpty, MinLength, IsOptional, IsEnum } from 'class-validator';
+import { IsNotEmpty, MinLength, IsEnum, IsOptional } from 'class-validator';
+
+export class LoginDto {
+  @IsNotEmpty()
+  username: string;
+
+  @IsNotEmpty()
+  password: string;
+}
 
 export class UserDto {
   @IsNotEmpty()

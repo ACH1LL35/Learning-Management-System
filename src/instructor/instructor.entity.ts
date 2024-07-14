@@ -1,10 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Course } from '../course/course.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Instructor {
   @PrimaryGeneratedColumn()
   InstructorID: number;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
+  User: User;
 
   @Column()
   Fname: string;
@@ -29,7 +33,4 @@ export class Instructor {
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   RegistrationDate: Date;
-
-  @OneToMany(() => Course, course => course.InstructorID)
-  courses: Course[];
 }

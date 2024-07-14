@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Any, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { UserDto, UpdateUserDto } from './user.dto';
@@ -11,9 +11,9 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  
+
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.userRepository.findOne({ where:{Username: username} });
+    return this.userRepository.findOne({ where: { Username: username } });
   }
 
   async hashPassword(password: string): Promise<string> {
@@ -22,11 +22,14 @@ export class UserService {
   }
 
   async comparePasswords(plainTextPassword: string, hashedPassword: string): Promise<boolean> {
+    if (!plainTextPassword || !hashedPassword) {
+      throw new BadRequestException('Password or hashed password missing');
+    }
     return await bcrypt.compare(plainTextPassword, hashedPassword);
   }
 
   async create(userDto: UserDto): Promise<User> {
-     userDto.Password= await this.hashPassword(userDto.Password);
+    userDto.Password = await this.hashPassword(userDto.Password);
     const user = this.userRepository.create(userDto);
     return this.userRepository.save(user);
   }
@@ -42,11 +45,11 @@ export class UserService {
       throw new UnauthorizedException('You are not authorized to perform this action');
     }
 
+    if (updateUserDto.Password) {
+      updateUserDto.Password = await this.hashPassword(updateUserDto.Password);
+    }
+
     Object.assign(user, updateUserDto);
     return this.userRepository.save(user);
-  }
-
-  async findByUsernameAndPassword(username: string, password: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { Username: username, Password: password } });
   }
 }

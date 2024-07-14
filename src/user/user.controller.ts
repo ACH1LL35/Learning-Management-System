@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Patch, Param, Delete, Session, Logger, UsePipes, ValidationPipe, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto } from './user.dto';
+import { UserDto, LoginDto } from './user.dto';
 
 @Controller('users')
 export class UserController {
@@ -11,26 +11,44 @@ export class UserController {
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() createUserDto: UserDto) {
-    // Check if username already exists
     const existingUser = await this.userService.findByUsername(createUserDto.Username);
     if (existingUser) {
       throw new BadRequestException('Username already exists');
     }
 
-    // If username does not exist, create new user
     const createdUser = await this.userService.create(createUserDto);
     return { message: 'User created successfully', user: createdUser };
   }
 
   @Post('login')
-  async login(@Body() credentials: { username: string; password: string }, @Session() session: Record<string, any>) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async login(
+    @Body() credentials: LoginDto,
+    @Session() session: Record<string, any>,
+  ) {
     const { username, password } = credentials;
-    const user = await this.userService.findByUsernameAndPassword(username, password);
+    this.logger.log(`Attempting to log in user: ${username}`);
+
+    if (!username || !password) {
+      throw new BadRequestException('Username and password are required');
+    }
+
+    const user = await this.userService.findByUsername(username);
     if (!user) {
       throw new BadRequestException('Invalid username or password');
     }
-    session.userId = user.UserID;
-    session.userType = user.UserType;
+
+    const isPasswordValid = await this.userService.comparePasswords(password, user.Password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid username or password');
+    }
+
+    session.UserId = user.UserID;
+    session.UserType = user.UserType;
+
+    this.logger.log(`User logged in: ${user.UserID} - ${user.UserType}`);
+    console.log('Session data set:', session);
+
     return { message: 'Login successful', user };
   }
 

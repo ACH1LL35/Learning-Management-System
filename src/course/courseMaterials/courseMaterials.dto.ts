@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CourseMaterialDto {
+export class CreateCourseMaterialDto {
   @IsNotEmpty()
   CourseID: number;
 
@@ -15,4 +15,9 @@ export class CourseMaterialDto {
 
   @IsNotEmpty()
   ContentType: string;
+}
+
+export class DeleteCourseMaterialDto {
+  @IsNotEmpty()
+  MaterialID: number;
 }

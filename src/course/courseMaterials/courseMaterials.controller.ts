@@ -1,19 +1,27 @@
-import { Controller, Post, Body, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Delete, Body, Param, Session, UsePipes, ValidationPipe, UnauthorizedException } from '@nestjs/common';
 import { CourseMaterialService } from './courseMaterials.service';
-import { CourseMaterialDto } from './courseMaterials.dto';
-import { CourseMaterial } from './courseMaterials.entity';
+import { CreateCourseMaterialDto, DeleteCourseMaterialDto } from './courseMaterials.dto';
 
-@Controller('materials')
+@Controller('course-material')
 export class CourseMaterialController {
-  constructor(private readonly courseMaterialService: CourseMaterialService) {}
+  constructor(private readonly materialService: CourseMaterialService) {}
 
   @Post()
-  async create(@Body() createDto: CourseMaterialDto): Promise<CourseMaterial> {
-    return this.courseMaterialService.create(createDto);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(
+    @Body() createMaterialDto: CreateCourseMaterialDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.materialService.create(createMaterialDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') materialID: number): Promise<void> {
-    await this.courseMaterialService.delete(materialID);
+  async delete(
+    @Param('id') id: number,
+    @Session() session: Record<string, any>,
+  ) {
+    const { UserType } = session;
+    return this.materialService.delete({ MaterialID: id }, UserType);
   }
 }

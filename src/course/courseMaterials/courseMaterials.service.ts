@@ -1,32 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CourseMaterial } from './courseMaterials.entity';
-import { CourseMaterialDto } from './courseMaterials.dto';
+import { CreateCourseMaterialDto, DeleteCourseMaterialDto } from './courseMaterials.dto';
 
 @Injectable()
 export class CourseMaterialService {
   constructor(
     @InjectRepository(CourseMaterial)
-    private readonly courseMaterialRepository: Repository<CourseMaterial>,
+    private readonly materialRepository: Repository<CourseMaterial>,
   ) {}
 
-  async create(courseMaterialDto: CourseMaterialDto): Promise<CourseMaterial> {
-    const { CourseID, ContentID, ...rest } = courseMaterialDto;
-    
-    const courseMaterial = new CourseMaterial();
-    courseMaterial.course = { CourseID } as any; 
-    courseMaterial.contentApproval = { ContentID } as any; 
-    Object.assign(courseMaterial, rest);
-
-    return this.courseMaterialRepository.save(courseMaterial);
+  async create(createCourseMaterialDto: CreateCourseMaterialDto): Promise<CourseMaterial> {
+    const material = this.materialRepository.create(createCourseMaterialDto);
+    return this.materialRepository.save(material);
   }
 
-  async delete(materialID: number): Promise<void> {
-    const courseMaterial = await this.courseMaterialRepository.findOne(materialID as any);
-    if (!courseMaterial) {
-      throw new NotFoundException(`Course material with ID ${materialID} not found`);
+  async delete(deleteCourseMaterialDto: DeleteCourseMaterialDto, userType: string): Promise<void> {
+    // Check if user is Admin or Instructor
+    if (userType !== 'Admin' && userType !== 'Instructor') {
+      throw new UnauthorizedException('You must be logged in as an admin or instructor to delete course material');
     }
-    await this.courseMaterialRepository.delete(materialID);
+
+    const { MaterialID } = deleteCourseMaterialDto;
+    const material = await this.materialRepository.findOne({where:{MaterialID:MaterialID}});
+
+    if (!material) {
+      throw new BadRequestException(`Course material with ID ${MaterialID} not found`);
+    }
+
+    await this.materialRepository.remove(material);
   }
 }

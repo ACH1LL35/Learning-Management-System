@@ -7,12 +7,14 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'your-secret-key',
+      secret: 'arnabishakh',
       resave: false,
       saveUninitialized: false,
+      cookie: { secure: false }, 
     }),
   );
 
   await app.listen(3000);
 }
+
 bootstrap();

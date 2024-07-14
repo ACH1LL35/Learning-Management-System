@@ -1,9 +1,6 @@
-import { IsNotEmpty, IsEmail, IsOptional, IsMobilePhone, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsDate, IsString, IsOptional } from 'class-validator';
 
 export class CreateAdminDto {
-  @IsNotEmpty()
-  UserID: number;
-
   @IsNotEmpty()
   Fname: string;
 
@@ -15,15 +12,13 @@ export class CreateAdminDto {
   Email: string;
 
   @IsNotEmpty()
-  @IsMobilePhone()
   Mobile: string;
 
   @IsNotEmpty()
   Gender: string;
 
   @IsNotEmpty()
-  @IsDateString()
-  DOB: string;
+  DOB: Date;
 
   @IsNotEmpty()
   Address: string;
@@ -31,11 +26,11 @@ export class CreateAdminDto {
 
 export class UpdateAdminDto {
   @IsOptional()
-  @IsNotEmpty()
+  @IsString()
   Fname?: string;
 
   @IsOptional()
-  @IsNotEmpty()
+  @IsString()
   Lname?: string;
 
   @IsOptional()
@@ -43,16 +38,17 @@ export class UpdateAdminDto {
   Email?: string;
 
   @IsOptional()
-  @IsMobilePhone()
+  @IsString()
   Mobile?: string;
 
   @IsOptional()
+  @IsString()
   Gender?: string;
 
   @IsOptional()
-  @IsDateString()
-  DOB?: string;
+  DOB?: Date;
 
   @IsOptional()
+  @IsString()
   Address?: string;
 }

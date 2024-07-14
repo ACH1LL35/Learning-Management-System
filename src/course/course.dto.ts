@@ -1,8 +1,6 @@
-import { IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
-import { Instructor } from '../instructor/instructor.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCourseDto {
-    
   @IsNotEmpty()
   CourseName: string;
 
@@ -13,31 +11,22 @@ export class CreateCourseDto {
   InstructorID: number;
 
   @IsNotEmpty()
-  EnrollmentDate: Date;
-
-  @IsNotEmpty()
-  @IsEnum(['active', 'inactive'])
   CourseStatus: string;
 }
 
 export class UpdateCourseDto {
-  @IsOptional()
   @IsNotEmpty()
-  CourseName?: string;
+  @IsString()
+  CourseName: string;
 
-  @IsOptional()
   @IsNotEmpty()
-  Description?: string;
+  @IsString()
+  Description: string;
 
-  @IsOptional()
   @IsNotEmpty()
-  InstructorID?: number;
+  InstructorID: number;
 
-  @IsOptional()
   @IsNotEmpty()
-  EnrollmentDate?: Date;
-
-  @IsOptional()
-  @IsEnum(['active', 'inactive'])
-  CourseStatus?: string;
+  @IsString()
+  CourseStatus: string;
 }

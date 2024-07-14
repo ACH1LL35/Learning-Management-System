@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Content } from './contentApproval.entity';
+import { ContentApproval } from './contentApproval.entity';
 import { ContentApprovalService } from './contentApproval.service';
 import { ContentApprovalController } from './contentApproval.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Content])],
+  imports: [TypeOrmModule.forFeature([ContentApproval])],
   providers: [ContentApprovalService],
   controllers: [ContentApprovalController],
 })

@@ -1,71 +1,37 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Admin } from './admin.entity';
 import { CreateAdminDto, UpdateAdminDto } from './admin.dto';
-import { MailerService } from '@nestjs-modules/mailer';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private readonly adminRepository: Repository<Admin>,
-    private readonly mailerService: MailerService,
   ) {}
 
-  async findByUserID(userID: number): Promise<Admin | undefined> {
-    return this.adminRepository.findOne({ where: { User: { UserID: userID } } });
-  }
-
-  async create(createAdminDto: CreateAdminDto): Promise<Admin> {
-    const admin = this.adminRepository.create(createAdminDto);
-    const savedAdmin = await this.adminRepository.save(admin);
-
-    // Send registration email
-    await this.sendRegistrationEmail(savedAdmin.Email);
-
-    return savedAdmin;
-  }
-
-  async update(id: number, updateAdminDto: UpdateAdminDto): Promise<Admin> {
-    const admin = await this.adminRepository.findOne({ where: { AdminID: id } });
-    if (!admin) {
-      throw new NotFoundException(`Admin with ID ${id} not found`);
-    }
-
-    // Update admin properties
-    Object.assign(admin, updateAdminDto);
-
+  async create(createAdminDto: CreateAdminDto, userId: number): Promise<Admin> {
+    const admin = this.adminRepository.create({
+      ...createAdminDto,
+      User: { UserID: userId } as User,
+    });
     return this.adminRepository.save(admin);
   }
 
-  async delete(id: number): Promise<void> {
-    const admin = await this.adminRepository.findOne({ where: { AdminID: id } });
+  async update(adminId: number, updateAdminDto: UpdateAdminDto, sessionUserId: number): Promise<Admin> {
+    const admin = await this.adminRepository.findOne({ where: { AdminID: adminId }, relations: ['User'] });
+
     if (!admin) {
-      throw new NotFoundException(`Admin with ID ${id} not found`);
+      throw new BadRequestException(`Admin with ID ${adminId} not found`);
     }
 
-    await this.adminRepository.remove(admin);
-  }
-
-  async findAll(): Promise<Admin[]> {
-    return this.adminRepository.find();
-  }
-
-  async findOne(id: number): Promise<Admin> {
-    const admin = await this.adminRepository.findOne({ where: { AdminID: id } });
-    if (!admin) {
-      throw new NotFoundException(`Admin with ID ${id} not found`);
+    if (admin.User.UserID !== sessionUserId) {
+      throw new UnauthorizedException('You are not authorized to perform this action');
     }
-    return admin;
-  }
 
-  private async sendRegistrationEmail(email: string) {
-    await this.mailerService.sendMail({
-      to: email,
-      subject: 'Registration Confirmation',
-      text: 'Thank you for registering with us!',
-      html: '<b>Thank you for registering with us!</b>',
-    });
+    Object.assign(admin, updateAdminDto);
+    return this.adminRepository.save(admin);
   }
 }
