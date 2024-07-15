@@ -2,8 +2,14 @@ import { IsNotEmpty, IsDateString } from 'class-validator';
 
 export class ConsentFormDto {
   @IsNotEmpty()
-  FileName: string;
+  FormName: string;
+
+  @IsNotEmpty()
+  Description: string;
 
   @IsDateString()
-  UploadDate: Date;
+  FormDate: Date;
+
+  @IsNotEmpty()
+  CollectedBy: string;
 }

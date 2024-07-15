@@ -17,7 +17,6 @@ export class ParentService {
     const parent = this.parentRepository.create(parentDto);
     const savedParent = await this.parentRepository.save(parent);
 
-    // Send registration email
     await this.sendRegistrationEmail(savedParent.Email);
 
     return savedParent;

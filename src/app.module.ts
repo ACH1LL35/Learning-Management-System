@@ -13,8 +13,8 @@ import { ReportingModule } from './admin/report/report.module';
 import { InstructorModule } from './instructor/instructor.module';
 import { EventModule } from './event/event.module';
 import { FAQModule } from './faq/faq.module';
-import { ConsentFormModule } from './parent/consent-form.module';
 import { StudentModule } from './student/student.module';
+import { ConsentFormModule } from './parent/ConsentForm/consent-form.module';
 
 @Module({
   imports: [

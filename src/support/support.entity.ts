@@ -8,7 +8,7 @@ export class Support {
   @PrimaryGeneratedColumn()
   SupportID: number;
 
-  @ManyToOne(() => User, { eager: true }) // Assuming eager loading for user details
+  @ManyToOne(() => User, { eager: true }) 
   @JoinColumn({ name: 'UserID' })
   User: User;
 

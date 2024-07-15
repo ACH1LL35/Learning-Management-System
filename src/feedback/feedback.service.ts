@@ -21,7 +21,6 @@ export class FeedbackService {
       throw new UnauthorizedException('Invalid user');
     }
 
-    // Check if user is Student, Instructor, or Parent
     if (userType !== 'Student' && userType !== 'Instructor' && userType !== 'Parent') {
       throw new UnauthorizedException('You must be logged in as a student, instructor, or parent to create feedback');
     }

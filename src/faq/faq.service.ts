@@ -23,7 +23,6 @@ export class FAQService {
       throw new BadRequestException(`FAQ with ID ${faqId} not found`);
     }
 
-    // Check if user is Admin
     if (userType !== 'Admin') {
       throw new UnauthorizedException('You must be logged in as an admin to update FAQ details');
     }
@@ -39,7 +38,6 @@ export class FAQService {
       throw new BadRequestException(`FAQ with ID ${faqId} not found`);
     }
 
-    // Check if user is Admin
     if (userType !== 'Admin') {
       throw new UnauthorizedException('You must be logged in as an admin to delete FAQs');
     }

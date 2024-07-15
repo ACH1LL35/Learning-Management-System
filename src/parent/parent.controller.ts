@@ -33,11 +33,11 @@ export class ParentController {
     @Body() updateParentDto: UpdateParentDto,
     @Session() session: Record<string, any>,
   ) {
-    const sessionParentId = parseInt(session.parentId); // Parse session.parentId to number if necessary
+    const sessionParentId = parseInt(session.parentId); 
     const updatedParent = await this.parentService.update(id, updateParentDto, sessionParentId);
 
     try {
-      await this.sendProfileUpdatedEmail(updatedParent.Email); // Send email on successful profile update
+      await this.sendProfileUpdatedEmail(updatedParent.Email); 
     } catch (error) {
       this.logger.error(`Failed to send profile updated email to ${updatedParent.Email}`, error.stack);
     }
@@ -52,13 +52,13 @@ export class ParentController {
     if (!parent) {
       throw new BadRequestException('Invalid email or password');
     }
-    session.parentId = parent.ParentsID.toString(); // Store ParentsID as string in session
+    session.parentId = parent.ParentsID.toString(); 
     return { message: 'Login successful', parent };
   }
 
   @Delete('logout')
   logout(@Session() session: Record<string, any>) {
-    session.destroy(); // Clear session data
+    session.destroy(); 
     return { message: 'Logged out successfully' };
   }
 

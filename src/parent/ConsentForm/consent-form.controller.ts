@@ -1,11 +1,11 @@
 import { Controller, Post, Body, Delete, Param, Get, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ConsentFormService } from './consent-form.service';
+import { ConsentFormDto } from './consent-form.dto';
 import { ConsentForm } from './consent-form.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ConsentFormDto } from './create-consent-form.dto';
 
 @Controller('consent-forms')
 export class ConsentFormController {

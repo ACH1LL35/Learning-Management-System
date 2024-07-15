@@ -17,7 +17,6 @@ export class CourseMaterialService {
   }
 
   async delete(deleteCourseMaterialDto: DeleteCourseMaterialDto, userType: string): Promise<void> {
-    // Check if user is Admin or Instructor
     if (userType !== 'Admin' && userType !== 'Instructor') {
       throw new UnauthorizedException('You must be logged in as an admin or instructor to delete course material');
     }

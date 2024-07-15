@@ -6,7 +6,7 @@ export class Feedback {
   @PrimaryGeneratedColumn()
   FeedbackID: number;
 
-  @ManyToOne(() => User, { eager: true }) // Assuming eager loading for user details
+  @ManyToOne(() => User, { eager: true }) 
   @JoinColumn({ name: 'UserID' })
   User: User;
 

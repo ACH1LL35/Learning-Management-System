@@ -9,7 +9,7 @@ export class SupportController {
   constructor(private readonly supportService: SupportService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
+  @UsePipes(new ValidationPipe({ transform: true })) 
   async create(@Body() createSupportDto: CreateSupportDto) {
     return this.supportService.create(createSupportDto);
   }
@@ -25,7 +25,7 @@ export class SupportController {
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true })) // Apply validation pipe here
+  @UsePipes(new ValidationPipe({ transform: true })) 
   async update(@Param('id') id: string, @Body() updateSupportDto: UpdateSupportDto) {
     return this.supportService.update(+id, updateSupportDto);
   }

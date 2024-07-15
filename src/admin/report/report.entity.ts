@@ -11,7 +11,7 @@ export class Reporting {
   @Column()
   Description: string;
 
-  @Column({ type: 'timestamp' })
+  @Column()
   ReportDate: Date;
 
   @Column()

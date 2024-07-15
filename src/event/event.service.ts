@@ -23,7 +23,6 @@ export class EventService {
       throw new BadRequestException(`Event with ID ${eventId} not found`);
     }
 
-    // Check if user is Admin or Instructor
     if (userType !== 'Admin' && userType !== 'Instructor') {
       throw new UnauthorizedException('You must be logged in as an admin or instructor to update event details');
     }
@@ -39,7 +38,6 @@ export class EventService {
       throw new BadRequestException(`Event with ID ${eventId} not found`);
     }
 
-    // Check if user is Admin
     if (userType !== 'Admin') {
       throw new UnauthorizedException('You must be logged in as an admin to delete events');
     }

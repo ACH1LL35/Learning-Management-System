@@ -14,7 +14,7 @@ export class CourseEnrollmentsController {
 
   @Post()
   async createCourseEnrollment(@Body() createCourseEnrollmentDto: CreateCourseEnrollmentDto): Promise<CourseEnrollments> {
-    return await this.courseEnrollmentsService.createCourseEnrollment(createCourseEnrollmentDto); // Pass the instance
+    return await this.courseEnrollmentsService.createCourseEnrollment(createCourseEnrollmentDto); 
   }
 
   @Delete(':id')
