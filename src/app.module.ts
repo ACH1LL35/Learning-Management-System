@@ -15,12 +15,13 @@ import { EventModule } from './event/event.module';
 import { FAQModule } from './faq/faq.module';
 import { StudentModule } from './student/student.module';
 import { ConsentFormModule } from './parent/ConsentForm/consent-form.module';
+import { EvaluationFormModule } from './student/EvaluationForm/evaluation-form.module';
 
 @Module({
   imports: [
     ParentModule,AdminModule,CourseModule,InstructorModule,UserModule,
     ContentApprovalModule,ReportingModule,EventModule,CourseMaterialModule,
-    FAQModule,ConsentFormModule,StudentModule,
+    FAQModule,ConsentFormModule,StudentModule,EvaluationFormModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -38,7 +39,7 @@ import { ConsentFormModule } from './parent/ConsentForm/consent-form.module';
         secure: false, // Use STARTTLS
         auth: {
           user: 'zobayeralam1025@gmail.com', // Your Gmail email address
-          pass: 'axpa nfuj virs fgbl', // Your Gmail password or app-specific password
+          pass: '', // Your Gmail password or app-specific password
         },
         tls: {
           // Optional TLS settings if needed
