@@ -13,5 +13,6 @@ import { studentProfile, CourseEnrollments, Wishlist, Payments, Submissions, Ach
   imports: [TypeOrmModule.forFeature([studentProfile, CourseEnrollments, Wishlist, Payments, Submissions, Achievements])],
   controllers: [StudentController, CourseEnrollmentsController, WishlistController, PaymentsController, SubmissionsController, AchievementsController],
   providers: [StudentService, CourseEnrollmentsService, WishlistService, PaymentsService, SubmissionsService, AchievementsService],
+  exports: [TypeOrmModule] // Export TypeOrmModule for other modules to use
 })
 export class StudentModule {}

@@ -14,7 +14,7 @@ export class ConsentFormService {
     private readonly consentFormRepository: Repository<ConsentForm>,
   ) {}
 
-  async create(consentFormDto: ConsentFormDto, file: Express.Multer.File): Promise<ConsentForm> {
+  async create(consentFormDto: ConsentFormDto, file: Express.Multer.File, userID: number): Promise<ConsentForm> {
     const { FormName, Description, FormDate, CollectedBy } = consentFormDto;
 
     const uploadPath = './uploads/consent-forms/';
@@ -37,6 +37,7 @@ export class ConsentFormService {
       FormDate,
       CollectedBy,
       FilePath: filePath,
+      UserID: userID,
     });
 
     return this.consentFormRepository.save(consentForm);

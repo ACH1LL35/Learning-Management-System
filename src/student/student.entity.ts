@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { User } from '../user/user.entity';
 import { Course } from '../course/course.entity';
+import { IsNotEmpty } from "class-validator";
 
 @Entity("student")
 export class studentProfile {
@@ -28,10 +29,12 @@ export class studentProfile {
   @Column()
   Address: string;
 
+  @IsNotEmpty()
   @OneToOne(() => User)
-  @JoinColumn()
+  @JoinColumn({ name: 'UserID' })
   user: User;
 }
+
 
 @Entity('course_enrollments')
 export class CourseEnrollments {

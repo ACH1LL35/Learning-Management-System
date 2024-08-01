@@ -16,12 +16,15 @@ import { FAQModule } from './faq/faq.module';
 import { StudentModule } from './student/student.module';
 import { ConsentFormModule } from './parent/ConsentForm/consent-form.module';
 import { EvaluationFormModule } from './student/EvaluationForm/evaluation-form.module';
+import { ChildManagementModule } from './parent/ChildManagement/child-management.module';
+import { DiscussionModule } from './parent/discussion/discussion.module';
+import { DiscussionCommentModule } from './parent/discussion-comment/discussion-comment.module';
 
 @Module({
   imports: [
-    ParentModule,AdminModule,CourseModule,InstructorModule,UserModule,
-    ContentApprovalModule,ReportingModule,EventModule,CourseMaterialModule,
-    FAQModule,ConsentFormModule,StudentModule,EvaluationFormModule,
+    ParentModule,AdminModule,CourseModule,InstructorModule,DiscussionModule,UserModule,
+    ContentApprovalModule,ReportingModule,EventModule,CourseMaterialModule,DiscussionCommentModule,
+    FAQModule,ConsentFormModule,StudentModule,ChildManagementModule,EvaluationFormModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',

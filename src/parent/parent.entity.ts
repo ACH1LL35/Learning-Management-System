@@ -6,9 +6,6 @@ export class Parent {
   @PrimaryGeneratedColumn()
   ParentsID: number;
 
-  @Column({ nullable: true })
-  StudentID: number;
-
   @ManyToOne(() => User)
   @JoinColumn({ name: 'UserID' })
   User: User;

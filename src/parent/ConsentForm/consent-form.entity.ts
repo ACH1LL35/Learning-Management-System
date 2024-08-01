@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from 'src/user/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('consent_form')
 export class ConsentForm {
@@ -19,4 +20,11 @@ export class ConsentForm {
 
   @Column({ nullable: true })
   FilePath: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'UserID' })
+  user: User;
+
+  @Column()
+  UserID: number;
 }
