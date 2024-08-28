@@ -15,9 +15,5 @@ export class UpdateDiscussionDto {
 
   @IsOptional()
   @IsString()
-  dDesc?: string;
-
-  @IsOptional()
-  @IsDate()
-  date_posted?: Date;
+  ddesc?: string;
 }

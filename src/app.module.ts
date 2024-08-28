@@ -19,10 +19,11 @@ import { EvaluationFormModule } from './student/EvaluationForm/evaluation-form.m
 import { ChildManagementModule } from './parent/ChildManagement/child-management.module';
 import { DiscussionModule } from './parent/discussion/discussion.module';
 import { DiscussionCommentModule } from './parent/discussion-comment/discussion-comment.module';
+import { ActivityModule } from './parent/activity/activity.module';
 
 @Module({
   imports: [
-    ParentModule,AdminModule,CourseModule,InstructorModule,DiscussionModule,UserModule,
+    ParentModule,AdminModule,CourseModule,InstructorModule,ActivityModule,DiscussionModule,UserModule,
     ContentApprovalModule,ReportingModule,EventModule,CourseMaterialModule,DiscussionCommentModule,
     FAQModule,ConsentFormModule,StudentModule,ChildManagementModule,EvaluationFormModule,
     TypeOrmModule.forRoot({

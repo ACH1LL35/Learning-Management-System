@@ -8,16 +8,8 @@ export class CreateDiscussionCommentDto {
   dcComment: string;
 }
 
-export class UpdateCommentDto {
+export class UpdateDiscussionCommentDto {
   @IsOptional()
   @IsString()
   dcComment?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  edited?: boolean;
-
-  @IsOptional()
-  @IsDate()
-  last_edited?: Date;
 }

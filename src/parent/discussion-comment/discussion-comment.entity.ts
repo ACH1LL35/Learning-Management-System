@@ -18,9 +18,9 @@ export class DiscussionComment {
   date_posted: Date;
 
   @Column({ nullable: true })
-  edited: string;
+  edited: boolean;
 
-  @CreateDateColumn({ nullable: true })
+  @Column({ nullable: true })
   last_edited: Date;
 
   @ManyToOne(() => User)

@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Get, Param, Req, UnauthorizedException, ForbiddenException} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Req, UnauthorizedException, ForbiddenException, Delete, Patch} from '@nestjs/common';
 import { DiscussionService } from './discussion.service';
 import { Request } from 'express';
 import session from 'express-session';
-import { CreateDiscussionDto } from './discussion.dto';
+import { CreateDiscussionDto, UpdateDiscussionDto } from './discussion.dto';
 
 @Controller('discussions')
 export class DiscussionController {
@@ -34,5 +34,40 @@ export class DiscussionController {
   @Get(':dID')
   async getDiscussionById(@Param('dID') dID: number) {
     return this.discussionService.findOne(dID);
+  }
+
+  @Patch(':dID')
+  async updateDiscussion(
+    @Param('dID') dID: number,
+    @Body() updateDiscussionDto: UpdateDiscussionDto,
+    @Req() req: Request & { session: session.SessionData }
+  ): Promise<any> {
+    const { UserId, UserType } = req.session;
+    if (!UserId) {
+      throw new UnauthorizedException('User not logged in');
+    }
+    if (UserType !== 'Parents') {
+      throw new ForbiddenException('User not authorized');
+    }
+
+    // Call the service method to update the discussion
+    return this.discussionService.updateDiscussion(dID, updateDiscussionDto, UserId);
+  }
+
+  @Delete(':dID')
+  async deleteDiscussion(
+    @Param('dID') dID: number,
+    @Req() req: Request & { session: session.SessionData }
+  ): Promise<void> {
+    const { UserId, UserType } = req.session;
+    if (!UserId) {
+      throw new UnauthorizedException('User not logged in');
+    }
+    if (UserType !== 'Parents') {
+      throw new ForbiddenException('User not authorized');
+    }
+
+    // Call the service method to delete the discussion
+    return this.discussionService.deleteDiscussion(dID, UserId);
   }
 }

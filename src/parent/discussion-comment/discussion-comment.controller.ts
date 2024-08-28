@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Get, Param, Req, UnauthorizedException, ForbiddenException} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Req, UnauthorizedException, ForbiddenException,Patch, Delete} from '@nestjs/common';
 import { DiscussionCommentService } from './discussion-comment.service';
 import { Request } from 'express';
 import session from 'express-session';
-import { CreateDiscussionCommentDto } from './discussion-comment.dto';
+import { CreateDiscussionCommentDto, UpdateDiscussionCommentDto } from './discussion-comment.dto';
 
 @Controller('discussion-comments')
 export class DiscussionCommentController {
@@ -34,5 +34,40 @@ export class DiscussionCommentController {
   @Get(':dcID')
   async getCommentById(@Param('dcID') dcID: number) {
     return this.discussionCommentService.findOne(dcID);
+  }
+
+  @Patch(':dcID')
+  async updateDiscussionComment(
+    @Param('dcID') dcID: number,
+    @Body() updateDiscussionCommentDto: UpdateDiscussionCommentDto,
+    @Req() req: Request & { session: session.SessionData }
+  ): Promise<any> {
+    const { UserId, UserType } = req.session;
+    if (!UserId) {
+      throw new UnauthorizedException('User not logged in');
+    }
+    if (UserType !== 'Parents') {
+      throw new ForbiddenException('User not authorized');
+    }
+
+    // Call the service method to update the comment
+    return this.discussionCommentService.updateDiscussionComment(dcID, updateDiscussionCommentDto, UserId);
+  }
+
+  @Delete(':dcID')
+  async deleteDiscussionComment(
+    @Param('dcID') dcID: number,
+    @Req() req: Request & { session: session.SessionData }
+  ): Promise<void> {
+    const { UserId, UserType } = req.session;
+    if (!UserId) {
+      throw new UnauthorizedException('User not logged in');
+    }
+    if (UserType !== 'Parents') {
+      throw new ForbiddenException('User not authorized');
+    }
+
+    // Call the service method to delete the comment
+    return this.discussionCommentService.deleteDiscussionComment(dcID, UserId);
   }
 }
