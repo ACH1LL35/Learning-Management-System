@@ -1,1 +1,0 @@
-{"version":3,"file":"faq.entity.js","sourceRoot":"","sources":["../../src/faq/faq.entity.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qCAAiE;AAG1D,IAAM,GAAG,GAAT,MAAM,GAAG;CAYf,CAAA;AAZY,kBAAG;AAEd;IADC,IAAA,gCAAsB,GAAE;;kCACX;AAGd;IADC,IAAA,gBAAM,GAAE;;qCACQ;AAGjB;IADC,IAAA,gBAAM,GAAE;;mCACM;AAGf;IADC,IAAA,gBAAM,GAAE;;qCACQ;cAXN,GAAG;IADf,IAAA,gBAAM,GAAE;GACI,GAAG,CAYf"}
